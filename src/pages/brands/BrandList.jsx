@@ -5,9 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/common/Button";
 import SearchBar from "../../components/common/SearchBar";
 import Filter from "../../components/common/Filter";
-import Pagination from "../../components/common/Pagination";
-import apiService from "../../services/apiService";
-import { webClient } from "../../services/webClient";
+import { ToastContainer, toast } from "react-toastify";
 import CanManageBrands from "../../components/CanManageBrands";
 import { ToastContainer, toast } from "react-toastify";
 import ConfirmModal from "../../components/common/ConfirmModal";
@@ -97,6 +95,7 @@ function BrandList() {
           {error}
         </div>
       )}
+      
       {loading && (
         <div className="my-4">
           <Loader />
