@@ -10,7 +10,6 @@ import { ToastContainer, toast } from "react-toastify";
 
 function BrandEdit() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const {
     brand,
     loading,
