@@ -1,0 +1,11 @@
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+npm install use-local-storage //to store the dark theme
+
+
+npm install react-router-dom
+
+npm install axios
+
+npx flowbite-react@latest init
