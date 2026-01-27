@@ -1,4 +1,3 @@
-import { ToastContainer, toast } from "react-toastify";
 import useAdmin from "../../hooks/useAdmin";
 import { ToastContainer, toast } from "react-toastify";
 import Link from "react-router-dom/Link";
@@ -6,16 +5,31 @@ import SearchBar from "../../components/common/SearchBar";
 import Filter from "../../components/common/Filter";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import Loader from "../../components/common/Loader";
-
+import { useNavigate } from "react-router-dom";
 function UserList() {
   const { users, loading, error, deleteUser } = useAdmin();
-
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const columns = [
     { key: "id", label: "ID" },
     { key: "name", label: "Name" },
     { key: "email", label: "Email" },
     { key: "role", label: "Role" },
   ];
+
+  const navigate = useNavigate();
+
+  const handleEdit = (userId) => {
+    navigate(`/users/edit/${userId}`);
+  };
+
+  const handleDelete = async (userId) => {
+    setOpenConfirmModal(true);
+    try {
+      await deleteUser(userId);
+    } finally {
+      setOpenConfirmModal(false);
+    }
+  };
 
   return (
     <>
@@ -69,6 +83,13 @@ function UserList() {
                 ))}
                 <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-700">
                   <button
+                    onClick={() => handleEdit(user.id)}
+                    className="text-blue-600 hover:text-blue-800 mr-4"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={handleDelete}
                     className="text-red-600 hover:text-red-800"
                   >
                     Delete
@@ -78,6 +99,16 @@ function UserList() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {openConfirmModal && (
+        <ConfirmModal
+          open={openConfirmModal}
+          title="Confirm Delete"
+          message="Are you sure you want to delete this user? This action cannot be undone."
+          onConfirm={() => handleDelete()}
+          onCancel={() => setOpenConfirmModal(false)}
+        />
       )}
     </>
   );

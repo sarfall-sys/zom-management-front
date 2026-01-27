@@ -7,6 +7,8 @@ export function useAdmin() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]);
+    const [user, setUser] = useState(null);
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -21,6 +23,22 @@ export function useAdmin() {
             setLoading(false);
         }
     };
+
+    async function fetchUserById(userId) {
+        setLoading(true);
+        setError(null);
+        try {
+            const user = await adminService.getUserById(userId);
+            setUser(user);
+        } catch (err) {
+            setError(err);
+            toast.error("Failed to fetch user");
+            throw err;
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
     async function createUser(userData) {
         setLoading(true);
@@ -94,7 +112,10 @@ export function useAdmin() {
         loading,
         error,
         users,
+        user,
+        roles,
         fetchUsers,
+        fetchUserById,
         createUser,
         updateUser,
         deleteUser,

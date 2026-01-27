@@ -95,7 +95,7 @@ function BrandList() {
           {error}
         </div>
       )}
-      
+
       {loading && (
         <div className="my-4">
           <Loader />
@@ -132,7 +132,7 @@ function BrandList() {
       {openConfirmModal && (
         <ConfirmModal
           open={openConfirmModal}
-          title="Confirm Deletion"
+          title="Confirm Delete"
           message="Are you sure you want to delete this brand? This action cannot be undone."
           onConfirm={() => {
             // Call the delete function here
