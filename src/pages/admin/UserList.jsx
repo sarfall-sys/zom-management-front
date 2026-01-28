@@ -9,7 +9,7 @@ import Loader from "../../components/common/Loader";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "flowbite-react";
 function UserList() {
-  const { users, loading, error, deleteUser, meta,search, setSearch, sort, setSort, order, setOrder, page, setPage } = useAdmin();
+  const { users, loading, error, deleteUser, meta,search, setSearch, sort, setSort, order, page} = useAdmin();
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const columns = [
@@ -116,7 +116,7 @@ function UserList() {
           </tbody>
         </table>
       )}
-      <Pagination meta={meta} />
+      <Pagination meta={meta} setPageOnPrev={setPageOnPrev} setPageOnNext={setPageOnNext} />
 
       {openConfirmModal && (
         <ConfirmModal

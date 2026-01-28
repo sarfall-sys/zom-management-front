@@ -7,11 +7,10 @@ const productService = {
         return await api.get(`/api/products/${id}`)
     },
 
-    async getProducts(params = null) {
+    async getProducts(params = {}) {
 
-        const config = params ? { params } : {};
 
-        return await api.get(`/api/products`, config);
+        return await api.get(`/api/products`, { params });
     },
     async createProduct(data) {
         return await api.post('/api/products', data);

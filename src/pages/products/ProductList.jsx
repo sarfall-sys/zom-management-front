@@ -1,20 +1,34 @@
-import React, { use, useState } from "react";
+import { useState } from "react";
 import Table from "../../components/common/Table";
 import Loader from "../../components/common/Loader";
 import Button from "../../components/common/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts";
-import { getProductColumns } from "../../config/getProductColumns";
 import SearchBar from "../../components/common/SearchBar";
 import Filter from "../../components/common/Filter";
+import Pagination from "../../components/common/Pagination";
+import ConfirmModal from "../../components/common/ConfirmModal";
+import { ToastContainer, toast } from "react-toastify";
+
 function ProductList() {
-  const navigate = useNavigate(); // Hook to programmatically navigate
+  const navigate = useNavigate();
 
-  const { products, loading, error, deleteProduct, fetchProducts } =
-    useProducts();
-  const [localSearchTerm, setLocalSearchTerm] = useState("");
+  const {
+    products,
+    loading,
+    error,
+    deleteProduct,
+    search,
+    setSearch,
+    sort,
+    setSort,
+    order,
+    setPageOnNext,
+    setPageOnPrev,
+  } = useProducts();
 
-  console.log("Products data ", products);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [id, setId] = useState(null);
 
   const columns = [
     { key: "name", label: "Product Name" },
@@ -32,30 +46,40 @@ function ProductList() {
     navigate(`/products/edit/${productId}`);
   };
 
-  const handleDelete = async (productId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await deleteProduct(productId);
-        alert("Product deleted successfully");
-      } catch (err) {
-        alert("Failed to delete product: " + err.message);
-      }
+  const handleDeleteModal = (id) => {
+    setOpenConfirmModal(true);
+    setId(id);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteProduct(id);
+
+      toast.success("Product deleted successfully");
+    } finally {
+      setOpenConfirmModal(false);
     }
   };
 
-  const handleSearch = async (term) => {
-    console.log("Search term from ProductList:", term);
-    // Implement search functionality here
-    await fetchProducts({ search: term });
+  const handleSearch = (term) => {
+    setSearch(term);
   };
 
-  const handleFilter = async (filterParams) => {
-    console.log("Filter params from ProductList:", { sort: filterParams });
-    await fetchProducts({ sort: filterParams });
+  const handleSort = (column) => {
+    setSort(column);
+  };
+
+  const handleOnPrev = () => {
+    setPageOnPrev();
+  };
+
+  const handleOnNext = () => {
+    setPageOnNext();
   };
 
   return (
     <>
+      <ToastContainer />
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Products</h1>
         <Link to="/products/create">
@@ -74,19 +98,15 @@ function ProductList() {
         </div>
       )}
 
-      <div className="flex justify-between mb-4 flex-grid md:grid-cols-2">
+      <div className="flex justify-between grid-cols-1 gap-4 mb-4 flex-grid md:grid-cols-2">
         <div className="mb-4">
           <SearchBar
-            type="text"
-            placeholder="Search Products..."
-            className="w-full px-4 py-2 border border-gray-300 rounded"
-            localSearchTerm={localSearchTerm}
-            onChange={(e) => setLocalSearchTerm(e.target.value)}
-            onSubmit={() => handleSearch(localSearchTerm)}
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
-        <div className="m-4">
-          <Filter onSubmit={handleFilter} />
+        <div className="mb-4">
+          <Filter onSort={handleSort} activeSort={sort} order={order} />
         </div>
       </div>
 
@@ -94,8 +114,27 @@ function ProductList() {
         columns={columns}
         data={products}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={handleDeleteModal}
       />
+      <Pagination
+        onPrevious={handleOnPrev}
+        onNext={handleOnNext}
+        currentPage={page}
+        lastPage={meta.last_page}
+      />
+
+      {openConfirmModal && (
+        <ConfirmModal
+          title="Confirm Deletion"
+          message="Are you sure you want to delete this product?"
+          onConfirm={async () => {
+            await handleDelete();
+            setOpenConfirmModal(false);
+          }}
+          onCancel={() => setOpenConfirmModal(false)}
+          open={openConfirmModal}
+        />
+      )}
     </>
   );
 }

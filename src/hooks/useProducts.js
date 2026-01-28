@@ -1,22 +1,42 @@
 import { useState, useEffect, useCallback } from 'react';
 import productService from '../services/productService'; // Fixed typo
+import { useDebounce } from "./useDebounce";
 
 export function useProducts() {
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Placeholder for future admin-related hooks
+  const search = searchParams.get("search") || "";
+  const sort = searchParams.get("sort") || "name";
+  const order = searchParams.get("order") || "asc";
+  const page = Number(searchParams.get("page") || 1);
 
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [meta, setMeta] = useState([]);
+
+
+  const debouncedSearch = useDebounce(search, 600);
 
   // Fetch all products
-  const fetchProducts = (async (params) => {
+  const fetchProducts = async (params) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await productService.getProducts(params);
-      setProducts(response.data.data);
-      return response.data;
+      const response = await productService.getProducts(
+        {
+          search: debouncedSearch,
+          sort,
+          order,
+          page,
+          ...params,
+        }
+      );
+      setProducts(response.data);
+      setMeta(response.meta);
     } catch (err) {
       setError(err.message || 'Failed to fetch products');
       console.error("Error fetching products:", err);
@@ -24,7 +44,7 @@ export function useProducts() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   // Fetch single product
   const fetchProduct = useCallback(async (id) => {
@@ -32,13 +52,12 @@ export function useProducts() {
     setError(null);
     try {
       const response = await productService.getProduct(id);
-      const br = response.data.data;
+      const br = response.data;
       setProduct({
         ...br,
         subfamily_id: br.subfamily_id ?? "",
         brand_id: br.brand_id ?? "",
       });
-      return br;
     } catch (err) {
       setError(err.message || 'Failed to fetch product');
       console.error("Error fetching product:", err);
@@ -108,6 +127,30 @@ export function useProducts() {
     }
   }, [fetchProducts]);
 
+
+
+  const setSearchTerm = (term) => {
+    updateParams({ search: term, page: 1 });
+  };
+
+  const setSort = (column) => {
+
+    updateParams({ sort: column, order: sort === column && order === "asc" ? "desc" : "asc", page: 1 });
+  };
+
+  const setPageOnPrev = () => {
+    const currentPage = Number(searchParams.get("page") || 1);
+    if (currentPage > 1) {
+      updateParams({ page: currentPage - 1 });
+    }
+  };
+
+  const setPageOnNext = () => {
+    const currentPage = Number(searchParams.get("page") || 1);
+    updateParams({ page: currentPage + 1 });
+  };
+
+
   // Initial fetch
   useEffect(() => {
     fetchProducts();
@@ -119,6 +162,8 @@ export function useProducts() {
     product,
     loading,
     error,
+    meta,
+
 
     // Actions
     fetchProducts,
@@ -127,6 +172,13 @@ export function useProducts() {
     updateProduct,
     deleteProduct,
 
-
+    // Search and Sorting
+    sort,
+    order,
+    order,
+    setSearchTerm,
+    setSort,
+    setPageOnPrev,
+    setPageOnNext,
   };
 }

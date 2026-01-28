@@ -39,10 +39,6 @@ function BrandList() {
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [id, setId] = useState(null);
 
-  console.log("Brands Data: ", brands);
-
-  console.log("Meta Data: ", meta);
-
   const handleEdit = (brandId) => {
     navigate(`/brands/edit/${brandId}`);
   };
@@ -61,6 +57,7 @@ function BrandList() {
       setOpenConfirmModal(false);
     }
   };
+  
   const handleSearch = (term) => {
     setSearch(term);
   };

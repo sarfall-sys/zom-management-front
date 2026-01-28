@@ -7,6 +7,10 @@ import { useDebounce } from "./useDebounce";
 export function useAdmin() {
     const [searchParams, setSearchParams] = useSearchParams();
     // Placeholder for future admin-related hooks
+    const search = searchParams.get("search") || "";
+    const sort = searchParams.get("sort") || "name";
+    const order = searchParams.get("order") || "asc";
+    const page = Number(searchParams.get("page") || 1);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -14,12 +18,9 @@ export function useAdmin() {
     const [roles, setRoles] = useState([]);
     const [user, setUser] = useState(null);
     const [meta, setMeta] = useState([]);
-    const [search, setSearch] = useState(searchParams.get("search") || "");
-    const [sort, setSort] = useState(searchParams.get("sort") || "name");
-    const [order, setOrder] = useState(searchParams.get("order") || "asc");
-    const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-    
-    const debouncedSearch = useDebounce(searchParams.get("search") || "", 600);
+
+
+    const debouncedSearch = useDebounce(search, 600);
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -30,7 +31,7 @@ export function useAdmin() {
                 // Add other params like sort, order, page if needed
                 sort: searchParams.get("sort") || "name",
                 order: searchParams.get("order") || "asc",
-                page: Number(searchParams.get("page") || 1),    
+                page: Number(searchParams.get("page") || 1),
             });
             setUsers(response.data);
             setMeta(response.meta);
@@ -126,7 +127,37 @@ export function useAdmin() {
         }
     }
 
- 
+    const updateParams = (params) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            Object.entries(params).forEach(([k, v]) => {
+                if (!v) next.delete(k);
+                else next.set(k, v);
+            });
+            return next;
+        });
+    };
+
+    const setSearchTerm = (term) => {
+        updateParams({ search: term, page: 1 });
+    };
+
+    const setSort = (column) => {
+
+        updateParams({ sort: column, order: sort === column && order === "asc" ? "desc" : "asc", page: 1 });
+    };
+
+    const setPageOnPrev = () => {
+        const currentPage = Number(searchParams.get("page") || 1);
+        if (currentPage > 1) {
+            updateParams({ page: currentPage - 1 });
+        }
+    };
+
+    const setPageOnNext = () => {
+        const currentPage = Number(searchParams.get("page") || 1);
+        updateParams({ page: currentPage + 1 });
+    };
 
     return {
         loading,
@@ -142,13 +173,13 @@ export function useAdmin() {
         deleteUser,
         getRoles,
         search,
-        setSearch,
         sort,
-        setSort,
         order,
-        setOrder,
         page,
-        setPage,
+        setSearchTerm,
+        setSort,
+        setPageOnPrev,
+        setPageOnNext,
 
     };
 
