@@ -2,8 +2,8 @@ import apiService from "./apiService";
 
 class AdminService {
 
-    async getAllUsers() {
-        const response = await apiService.get("/admin/users");
+    async getAllUsers(params = {}) {
+        const response = await apiService.get("/admin/users",{ params });
         return response.data;
     }
     async getUserById(userId) {

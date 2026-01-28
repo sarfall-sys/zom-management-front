@@ -235,8 +235,6 @@ export function useBrands() {
         fetchBrands();
     }, [debouncedSearch, sort, order, page]);
 
-
-
     return {
         brands,
         brand,

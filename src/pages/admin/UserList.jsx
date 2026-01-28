@@ -3,12 +3,15 @@ import { ToastContainer, toast } from "react-toastify";
 import Link from "react-router-dom/Link";
 import SearchBar from "../../components/common/SearchBar";
 import Filter from "../../components/common/Filter";
+import Pagination from "../../components/common/Pagination";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import Loader from "../../components/common/Loader";
 import { useNavigate } from "react-router-dom";
+import { Pagination } from "flowbite-react";
 function UserList() {
-  const { users, loading, error, deleteUser } = useAdmin();
+  const { users, loading, error, deleteUser, meta,search, setSearch, sort, setSort, order, setOrder, page, setPage } = useAdmin();
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
+
   const columns = [
     { key: "id", label: "ID" },
     { key: "name", label: "Name" },
@@ -30,6 +33,10 @@ function UserList() {
       setOpenConfirmModal(false);
     }
   };
+
+  const handleSort = (column) => {
+    setSort(column);
+  }
 
   return (
     <>
@@ -55,8 +62,17 @@ function UserList() {
         </div>
       )}
 
+      <div className="flex justify-between grid-cols-1 gap-4 mb-4 flex-grid md:grid-cols-2">
+        <div className="mb-4">
+          <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+        <div className="mb-4">
+          <Filter  onSort={handleSort} activeSort={sort} order={order} />
+        </div>
+      </div>
+
       {users.length > 0 && (
-        <table className="min-w-full bg-white">
+        <table className="min-w-full bg-bg-light dark:bg-bg-dark border border-gray-200 rounded-lg overflow-hidden">
           <thead>
             <tr>
               {columns.map((col) => (
@@ -89,7 +105,7 @@ function UserList() {
                     Edit
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={() => handleDelete(user.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     Delete
@@ -100,6 +116,7 @@ function UserList() {
           </tbody>
         </table>
       )}
+      <Pagination meta={meta} />
 
       {openConfirmModal && (
         <ConfirmModal

@@ -1,7 +1,11 @@
 import { toast } from "react-toastify";
 import { adminService } from "../services/adminService";
-import {roleSwrvice } from "../services/roleService";
+import { roleService } from "../services/roleService";
+import { useSearchParams } from "react-router-dom";
+import { useDebounce } from "./useDebounce";
+
 export function useAdmin() {
+    const [searchParams, setSearchParams] = useSearchParams();
     // Placeholder for future admin-related hooks
 
     const [loading, setLoading] = useState(false);
@@ -9,13 +13,27 @@ export function useAdmin() {
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
     const [user, setUser] = useState(null);
+    const [meta, setMeta] = useState([]);
+    const [search, setSearch] = useState(searchParams.get("search") || "");
+    const [sort, setSort] = useState(searchParams.get("sort") || "name");
+    const [order, setOrder] = useState(searchParams.get("order") || "asc");
+    const [page, setPage] = useState(Number(searchParams.get("page") || 1));
+    
+    const debouncedSearch = useDebounce(searchParams.get("search") || "", 600);
 
     const fetchUsers = async () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await adminService.getAllUsers();
-            setUsers(response);
+            const response = await adminService.getAllUsers({
+                search: debouncedSearch,
+                // Add other params like sort, order, page if needed
+                sort: searchParams.get("sort") || "name",
+                order: searchParams.get("order") || "asc",
+                page: Number(searchParams.get("page") || 1),    
+            });
+            setUsers(response.data);
+            setMeta(response.meta);
         } catch (err) {
             setError(err);
             toast.error("Failed to fetch users");
@@ -95,18 +113,20 @@ export function useAdmin() {
         }
     }
 
-   async function getRoles(){
+    async function getRoles() {
         setLoading(true);
         setError(null);
         try {
             const roles = await roleService.getRoles();
-            return roles;
+            setRoles(roles);
         } catch (err) {
             setError(err);
             toast.error("Failed to fetch roles");
             throw err;
         }
-   }
+    }
+
+ 
 
     return {
         loading,
@@ -114,12 +134,22 @@ export function useAdmin() {
         users,
         user,
         roles,
+        meta,
         fetchUsers,
         fetchUserById,
         createUser,
         updateUser,
         deleteUser,
-        getRoles
+        getRoles,
+        search,
+        setSearch,
+        sort,
+        setSort,
+        order,
+        setOrder,
+        page,
+        setPage,
+
     };
 
 }
