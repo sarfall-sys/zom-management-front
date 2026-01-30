@@ -39,38 +39,57 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      <Route path="product" element={<ProtectedRoute />}>
-        <Route path="list" element={<ProductList />} />
-        <Route path="create" element={<ProductCreate />} />
-        <Route path="edit/:id" element={<ProductEdit />} />
-      </Route>
+      {/*Products */}
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute>
+            <ProductList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/products/create"
+        element={
+          <ProtectedRoute>
+            <ProductCreate />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/products/edit/:id"
+        element={
+          <ProtectedRoute>
+            <ProductEdit />
+          </ProtectedRoute>
+        }
+      />
 
-     
-          {/* Protected routes */}
-          <Route
-            path="/brands"
-            element={
-              <ProtectedRoute>
-                <BrandList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/brands/create"
-            element={
-              <ProtectedRoute>
-                <BrandCreate />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/brands/edit/:id"
-            element={
-              <ProtectedRoute>
-                <BrandEdit />
-              </ProtectedRoute>
-            }
-          />
+      {/* Protected routes */}
+      <Route
+        path="/brands"
+        element={
+          <ProtectedRoute>
+            <BrandList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/brands/create"
+        element={
+          <ProtectedRoute>
+            <BrandCreate />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/brands/edit/:id"
+        element={
+          <ProtectedRoute>
+            <BrandEdit />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/dashboard"
         element={

@@ -22,12 +22,6 @@ function AdminDashboard() {
         <ChartCard title="Revenue Breakdown" chartType="pie" />
       </div>
     </DashboardCard>
-
-
-
-      
-
-
     </section>
     </>
 

@@ -9,7 +9,7 @@ import Filter from "../../components/common/Filter";
 import Pagination from "../../components/common/Pagination";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import { ToastContainer, toast } from "react-toastify";
-
+import CanManageProducts from "../../components/CanManageProducts";
 function ProductList() {
   const navigate = useNavigate();
 
@@ -23,6 +23,8 @@ function ProductList() {
     sort,
     setSort,
     order,
+    page,
+    meta,
     setPageOnNext,
     setPageOnPrev,
   } = useProducts();
@@ -80,12 +82,14 @@ function ProductList() {
   return (
     <>
       <ToastContainer />
+      <CanManageProducts>
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Products</h1>
         <Link to="/products/create">
           <Button variant="primary">Add Product</Button>
         </Link>
       </div>
+      </CanManageProducts>
 
       {error && (
         <div className="px-4 py-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded">
@@ -109,13 +113,14 @@ function ProductList() {
           <Filter onSort={handleSort} activeSort={sort} order={order} />
         </div>
       </div>
-
-      <Table
-        columns={columns}
-        data={products}
-        onEdit={handleEdit}
-        onDelete={handleDeleteModal}
-      />
+      <CanManageProducts>
+        <Table
+          columns={columns}
+          data={products}
+          onEdit={handleEdit}
+          onDelete={handleDeleteModal}
+        />
+      </CanManageProducts>
       <Pagination
         onPrevious={handleOnPrev}
         onNext={handleOnNext}

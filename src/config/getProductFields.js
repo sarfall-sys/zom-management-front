@@ -45,7 +45,7 @@ export const getProductFields = ({ subfamilies = [], brands = [] }) => {
       min:"0"
 
     },
-        {
+    {
       name: "is_active",
       label: "Is Active",
       type: "checkbox",
@@ -63,17 +63,21 @@ export const getProductFields = ({ subfamilies = [], brands = [] }) => {
       label: "Subfamily",
       type: "select",
       required: true,
-      options: subfamilies
+      options: subfamilies.map((sf) => ({
+        label: sf.name,
+        value: sf.id
+      }))
     },
     {
       name: "brand_id",
       label: "Brand",
       type: "select",
       required: false,
-      options: brands
+      options: brands.map((b) => ({
+        label: b.name,
+        value: b.id
+      }))
     },
-    
-
     
   ];
 };

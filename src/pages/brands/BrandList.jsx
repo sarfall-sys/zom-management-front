@@ -7,8 +7,8 @@ import SearchBar from "../../components/common/SearchBar";
 import Filter from "../../components/common/Filter";
 import { ToastContainer, toast } from "react-toastify";
 import CanManageBrands from "../../components/CanManageBrands";
-import { ToastContainer, toast } from "react-toastify";
 import ConfirmModal from "../../components/common/ConfirmModal";
+import Pagination from "../../components/common/Pagination";
 import { useState } from "react";
 function BrandList() {
   const navigate = useNavigate(); // Hook to programmatically navigate

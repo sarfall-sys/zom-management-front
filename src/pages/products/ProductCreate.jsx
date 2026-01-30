@@ -1,27 +1,22 @@
-import { useEffect } from "react";
+import { useEffect,useMemo} from "react";
 import Form from "../../components/common/Form";
-import { useSubfamilies } from "../../hooks/useSubfamilies";
-import { useBrands } from "../../hooks/useBrands";
 import { getProductFields } from "../../config/getProductFields";
 import { useProducts } from "../../hooks/useProducts";
 import { ToastContainer } from "react-toastify";
 
 function ProductCreate() {
-  const { storeProduct } = useProducts();
-
-  const { subfamiliesNames, fetchSubfamilyNames } = useSubfamilies();
-
-  const { brandNames, fetchBrandNames } = useBrands();
+  const { updateProduct,fetchBrands,fetchSubfamilies,brands,subfamilies } = useProducts();
 
   useEffect(() => {
-    fetchSubfamilyNames();
-    fetchBrandNames();
+    fetchSubfamilies();
+    fetchBrands();
   }, []);
 
-  const fields = getProductFields({
-    subfamilies: subfamiliesNames,
-    brands: brandNames,
-  });
+  const fields = useMemo(() => getProductFields({
+    subfamilies,
+    brands,
+  }), [subfamilies, brands]);
+
 
   const handleSubmit = async (formData) => {
     await storeProduct(formData);

@@ -1,5 +1,5 @@
 import { useAdmin } from "../../hooks/useAdmin";
-import useNavigate from "react-router-dom/useNavigate";
+import { useNavigate } from "react-router-dom";
 function UserCreate() {
   const navigate = useNavigate();
   const { roles, createUser } = useAdmin();

@@ -1,28 +1,35 @@
-import api from "./apiService"
+
+import apiService from "./apiService"
 const subfamilyService = {
 
     async getSubfamily(id) {
-        return await api.get(`/subfamilies/${id}`)
+        return await apiService.get(`/subfamilies/${id}`)
     },
 
     async getSubfamilies() {
-        return await api.get(`/subfamilies`)
+        return await apiService.get(`/subfamilies`)
+    },
+
+    async getSubfamiliesNames() {
+        return await apiService.get(`/subfamily-names`)
     },
 
     async createSubfamily(data) {
-        return await api.post(`/subfamilies/`, data)
+        return await apiService.post(`/subfamilies/`, data)
 
     },
     async updateSubfamily(id, data) {
-        return await api.put(`/subfamilies/${id}`, data)
+        return await apiService.patch(`/subfamilies/${id}`, data)
 
     },
 
     async deleteSubfamily(id) {
-        return await api.delete(`/subfamilies/${id}`)
+        return await apiService.delete(`/subfamilies/${id}`)
     },
     async getSubfamilyNames() {
-        return await api.get('/subfamily-names');
+
+      const  response = await apiService.get('/subfamily-names');
+      return response.data;
     }
 }
 export default subfamilyService;

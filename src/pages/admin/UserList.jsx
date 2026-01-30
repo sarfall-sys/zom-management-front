@@ -1,13 +1,12 @@
 import useAdmin from "../../hooks/useAdmin";
 import { ToastContainer, toast } from "react-toastify";
-import Link from "react-router-dom/Link";
 import SearchBar from "../../components/common/SearchBar";
 import Filter from "../../components/common/Filter";
 import Pagination from "../../components/common/Pagination";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import Loader from "../../components/common/Loader";
 import { useNavigate } from "react-router-dom";
-import { Pagination } from "flowbite-react";
+import { Link } from "react-router-dom";
 function UserList() {
   const { users, loading, error, deleteUser, meta,search, setSearch, sort, setSort, order, page} = useAdmin();
   const [openConfirmModal, setOpenConfirmModal] = useState(false);

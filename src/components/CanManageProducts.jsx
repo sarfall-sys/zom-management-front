@@ -1,9 +1,11 @@
-import React from 'react'
+import { useAuthContext } from "../context/AuthContext";
 
-function CanManageProducts() {
-  return (
-    <div>CanManageProducts</div>
-  )
+function CanManageProducts({ children }) {
+    const { user } = useAuthContext();
+  
+    if (!user) return null;
+  
+    return [1, 2, 3].includes(user.role_id) ? children : null;
 }
 
 export default CanManageProducts

@@ -14,7 +14,7 @@ function Form({ fields, initialData = {}, onSubmit, isEdit }) {
   }, [initialData, fields]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked  } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
@@ -65,19 +65,19 @@ function Form({ fields, initialData = {}, onSubmit, isEdit }) {
                   id={field.name}
                   name={field.name}
                   required={field.required}
-                  className="w-full p-2 border rounded border-border-light dark:border-border-dark"
+                  className="w-full p-2 border rounded text-text-light border-border-dark dark:border-border-light"
                   value={formData[field.name] ?? ""}
                   onChange={handleChange}
+
                 >
                   <option value="">Select {field.label}</option>
-
-                  {field.options?.map((op) => (
+                  {field.options?.map((option) => (
                     <option
-                      key={op.value}
-                      value={op.value}
-                      className="text-text-light"
+                      key={option.value}
+                      value={option.value}
+                      className="text-text-light dark:text-text-light"
                     >
-                      {op.label}
+                      {option.label}
                     </option>
                   ))}
                 </select>

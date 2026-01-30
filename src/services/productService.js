@@ -1,31 +1,34 @@
-import api from "./apiService";
+import apiService from "./apiService";
 
 const productService = {
 
     async getProduct(id) {
 
-        return await api.get(`/api/products/${id}`)
+        const response = await apiService.get(`/products/${id}`)
+
+        return response.data;
     },
 
     async getProducts(params = {}) {
 
-
-        return await api.get(`/api/products`, { params });
+        const response = await apiService.get(`/products`, { params });
+        return response.data;
     },
     async createProduct(data) {
-        return await api.post('/api/products', data);
+        
+        const response = await apiService.post('/products', data);
+        return response.data;
     },
 
     async updateProduct(id, data) {
-
-        return await api.put(`/api/products/${id}`, data);
+        const response = await apiService.put(`/products/${id}`, data);
+        return response.data;
     },
 
     async deleteProduct(id) {
-
-        return await api.delete(`/api/products/${id}`)
+        const response = await apiService.delete(`/products/${id}`);
+        return response.data;
     },
-
 }
 
 export default productService;

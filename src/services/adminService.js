@@ -2,26 +2,32 @@ import apiService from "./apiService";
 
 class AdminService {
 
-    async getAllUsers(params = {}) {
-        const response = await apiService.get("/admin/users",{ params });
+    async getUsers(params = {}) {
+        const response = await apiClient.webGet('/admin/users', { params });
         return response.data;
     }
-    async getUserById(userId) {
-        const response = await apiService.get(`/admin/users/${userId}`);
+
+    async getUser(id) {
+        const response = await apiClient.webGet(`/admin/users/${id}`);
         return response.data;
     }
+
     async createUser(userData) {
-        const response = await apiService.webPost("/admin/users", userData);
+        const response = await apiClient.webPost('/admin/users', userData);
         return response.data;
     }
-    async deleteUser(userId) {
-        const response = await apiService.webDelete(`/admin/users/${userId}`);
-        return response.data;
-    }   
-    async updateUserRole(userId, role) {
-        const response = await apiService.webPut(`/admin/users/${userId}/role`, { role });
+
+    async updateUser(id, userData) {
+        const response = await apiClient.webPatch(`/admin/users/${id}`, userData);
         return response.data;
     }
+
+    async deleteUser(id) {
+        const response = await apiClient.webDelete(`/admin/users/${id}`);
+        return response.data;
+    }
+
 }
 
 export const adminService = new AdminService();
+

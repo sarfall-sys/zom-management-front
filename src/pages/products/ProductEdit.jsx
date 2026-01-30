@@ -1,42 +1,45 @@
-import { use, useEffect } from "react";
-import { useSubfamilies } from "../../hooks/useSubfamilies";
-import { useBrands } from "../../hooks/useBrands";
+import { useEffect,useMemo } from "react";
 import { getProductFields } from "../../config/getProductFields";
 import { useProducts } from "../../hooks/useProducts";
 import Form from "../../components/common/Form";
 import { useParams } from "react-router-dom";
-import { useBrands } from "../../hooks/useBrands";
 import { ToastContainer } from "react-toastify";
+import Loader from "../../components/common/Loader";
 
 function ProductEdit() {
   const { id } = useParams();
-  const { product, loading, error, updateProduct, fetchProduct } =
-    useProducts();
-
-  const { subfamiliesNames, fetchSubfamilyNames } = useSubfamilies();
-
-  const { brandNames, fetchBrandNames } = useBrands();
-
-  useEffect(() => {
-    fetchSubfamilyNames();
-    fetchBrandNames();
-  }, [fetchSubfamilyNames, fetchBrandNames]);
+  const {
+    product,
+    loading,
+    error,
+    updateProduct,
+    fetchProduct,
+    brands,
+    fetchBrands,
+    subfamilies,
+    fetchSubfamilies,
+  } = useProducts();
 
   useEffect(() => {
     if (id) {
       fetchProduct(id);
     }
-  }, [fetchProduct, id]);
+  }, [id]);
 
   useEffect(() => {
-    fetchBrandNames();
-    fetchSubfamilyNames();
+    fetchBrands();
   }, []);
 
-  const fields = getProductFields({
-    subfamilies: subfamiliesNames,
-    brands: brandNames,
-  });
+  useEffect(() => {
+    fetchSubfamilies();
+  }, []);
+
+  const fields = useMemo(() => {
+    return getProductFields({
+      subfamilies,
+      brands,
+    });
+  }, [subfamilies, brands]);
 
   const handleUpdate = async (formData) => {
     await updateProduct(id, formData);

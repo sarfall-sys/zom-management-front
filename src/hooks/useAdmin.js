@@ -1,8 +1,9 @@
 import { toast } from "react-toastify";
-import { adminService } from "../services/adminService";
-import { roleService } from "../services/roleService";
+import  {adminService}  from "../services/adminService";
+import roleService  from "../services/roleService";
 import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "./useDebounce";
+import { useEffect } from "react";
 
 export function useAdmin() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -159,6 +160,10 @@ export function useAdmin() {
         updateParams({ page: currentPage + 1 });
     };
 
+    useEffect(() => {
+        fetchUsers();
+    }, [debouncedSearch, sort, order, page]);
+
     return {
         loading,
         error,
@@ -184,3 +189,6 @@ export function useAdmin() {
     };
 
 }
+
+
+export default useAdmin;

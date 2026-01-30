@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import productService from '../services/productService'; // Fixed typo
+import roleService from '../services/roleService';
+import brandService from '../services/brandService';
+import subfamilyService from '../services/subfamilyService';
 import { useDebounce } from "./useDebounce";
-
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 export function useProducts() {
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,6 +20,8 @@ export function useProducts() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [meta, setMeta] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [subfamilies, setSubfamilies] = useState([]);
 
 
   const debouncedSearch = useDebounce(search, 600);
@@ -47,28 +53,30 @@ export function useProducts() {
   };
 
   // Fetch single product
-  const fetchProduct = useCallback(async (id) => {
+  const fetchProduct = async (id) => {
     setLoading(true);
     setError(null);
     try {
       const response = await productService.getProduct(id);
-      const br = response.data;
+      const pro = response.data;
       setProduct({
-        ...br,
-        subfamily_id: br.subfamily_id ?? "",
-        brand_id: br.brand_id ?? "",
+        ...pro,
+        subfamily_id: pro.subfamily_id ?? "",
+        brand_id: pro.brand_id ?? "",
       });
+      return pro;
+
     } catch (err) {
-      setError(err.message || 'Failed to fetch product');
-      console.error("Error fetching product:", err);
+      const status = err.response?.status;
+      setError(err.response?.data?.message || err.message || 'Failed to fetch brand');
       throw err;
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   // Create product
-  const storeProduct = useCallback(async (data) => {
+  const storeProduct = async (data) => {
     setLoading(true);
     setError(null);
     try {
@@ -83,10 +91,10 @@ export function useProducts() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   // Update product
-  const updateProduct = useCallback(async (id, data) => {
+  const updateProduct = async (id, data) => {
     setLoading(true);
     setError(null);
     try {
@@ -105,10 +113,10 @@ export function useProducts() {
     } finally {
       setLoading(false);
     }
-  }, [fetchProducts]);
+  };
 
   // Delete product
-  const deleteProduct = useCallback(async (id) => {
+  const deleteProduct = async (id) => {
     setLoading(true);
     setError(null);
     try {
@@ -125,9 +133,44 @@ export function useProducts() {
     } finally {
       setLoading(false);
     }
-  }, [fetchProducts]);
+  };
 
+  async function fetchBrands() {
+    try {
+      const brandsData = await brandService.getBrandNames();
+      const data = brandsData || brandsData.data;
+      console.log("Fetched brands names:", data);
+      return setBrands(data);
+    } catch (err) {
+      console.error("Error fetching brands:", err);
+      return [];
+    }
+  }
 
+  async function fetchSubfamilies() {
+    try {
+      const subfamiliesData = await subfamilyService.getSubfamilyNames();
+      const data = subfamiliesData || subfamiliesData.data;
+      console.log("Fetched subfamilies names:", data);
+
+      return setSubfamilies(data);
+    } catch (err) {
+      console.error("Error fetching subfamilies:", err);
+      return [];
+    }
+  }
+
+  const updateParams = (newParams) => {
+    const updatedParams = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value === null || value === undefined || value === "") {
+        updatedParams.delete(key);
+      } else {
+        updatedParams.set(key, value);
+      }
+    });
+    setSearchParams(updatedParams);
+  };
 
   const setSearchTerm = (term) => {
     updateParams({ search: term, page: 1 });
@@ -154,7 +197,7 @@ export function useProducts() {
   // Initial fetch
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, [debouncedSearch, sort, order, page]);
 
   return {
     // State
@@ -180,5 +223,12 @@ export function useProducts() {
     setSort,
     setPageOnPrev,
     setPageOnNext,
+
+    // Related Data
+
+    brands,
+    fetchBrands,
+    subfamilies,
+    fetchSubfamilies,
   };
 }

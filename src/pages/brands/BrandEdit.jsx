@@ -4,8 +4,6 @@ import { useBrands } from "../../hooks/useBrands";
 import { getBrandFields } from "../../config/getBrandFields";
 import Form from "../../components/common/Form";
 import Loader from "../../components/common/Loader";
-import { useNavigate } from "react-router-dom";
-import Error from "../../components/common/Error";
 import { ToastContainer, toast } from "react-toastify";
 
 function BrandEdit() {
@@ -18,6 +16,7 @@ function BrandEdit() {
     updateBrand,
     countries,
     fetchCountries,
+    
   } = useBrands();
 
   useEffect(() => {

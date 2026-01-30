@@ -1,7 +1,10 @@
-import React, { use } from "react";
 import { useAdmin } from "../../hooks/useAdmin";
+import Loader from "../../components/common/Loader";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+
 function UserEdit() {
-  const { user, roles, fetchUserById, updateUser } = useAdmin();
+  const { user, roles , fetchUserById, updateUser, loading, error , } = useAdmin();
 
   const { id } = useParams();
 

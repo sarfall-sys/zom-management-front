@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer ,Pie, PieChart, TooltipIndex } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer ,Pie, PieChart} from "recharts";
 
 function ChartCard({title, data,chartType}) {
 
