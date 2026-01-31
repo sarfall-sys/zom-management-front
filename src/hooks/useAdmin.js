@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
-import  {adminService}  from "../services/adminService";
-import roleService  from "../services/roleService";
-import { useSearchParams } from "react-router-dom";
+import { adminService } from "../services/adminService";
+import roleService from "../services/roleService";
+import { data, useSearchParams } from "react-router-dom";
 import { useDebounce } from "./useDebounce";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useAdmin() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -19,6 +19,10 @@ export function useAdmin() {
     const [roles, setRoles] = useState([]);
     const [user, setUser] = useState(null);
     const [meta, setMeta] = useState([]);
+    const [userStats, setUserStats] = useState({});
+    const [productStats, setProductStats] = useState({});
+    const [productBrandChartData, setProductBrandChartData] = useState([]);
+    const [productSubfamilyChartData, setProductSubfamilyChartData] = useState([]);
 
 
     const debouncedSearch = useDebounce(search, 600);
@@ -27,7 +31,7 @@ export function useAdmin() {
         setLoading(true);
         setError(null);
         try {
-            const response = await adminService.getAllUsers({
+            const response = await adminService.getUsers({
                 search: debouncedSearch,
                 // Add other params like sort, order, page if needed
                 sort: searchParams.get("sort") || "name",
@@ -48,7 +52,7 @@ export function useAdmin() {
         setLoading(true);
         setError(null);
         try {
-            const user = await adminService.getUserById(userId);
+            const user = await adminService.getUser(userId);
             setUser(user);
         } catch (err) {
             setError(err);
@@ -119,12 +123,99 @@ export function useAdmin() {
         setLoading(true);
         setError(null);
         try {
-            const roles = await roleService.getRoles();
+            const roles = await adminService.getNameRoles();
             setRoles(roles);
         } catch (err) {
             setError(err);
             toast.error("Failed to fetch roles");
             throw err;
+        }
+    }
+
+    async function fetchUserStats() {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await adminService.getUserStats();
+            const stats = response || response.data;
+            setUserStats(stats);
+        } catch (err) {
+            setError(err);
+            toast.error("Failed to fetch user stats");
+            throw err;
+        }
+        finally {
+            setLoading(false);
+        }
+
+    }
+
+    async function fetchProductStats() {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await adminService.getProductsStats();
+            const stats = response || response.data;
+            setProductStats(stats);
+        } catch (err) {
+            setError(err);
+            toast.error("Failed to fetch product stats");
+            throw err;
+        }
+
+        finally {
+            setLoading(false);
+        }
+    }
+
+
+    async function fetchProductBrandChartData() {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await adminService.getProductsBrandChartsData();
+            const charts = response;
+
+            console.log("Brands charts in fetch :", charts);
+            setProductBrandChartData(
+                charts.map(item => ({
+                    name: item.name,
+                    value: item.total
+                }))
+            )
+        }
+        catch (err) {
+            setError(err);
+            toast.error("Failed to fetch product brand chart data");
+            throw err;
+        }
+
+        finally {
+            setLoading(false);
+        }
+    }
+
+    async function fetchProductSubfamilyChartData() {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await adminService.getProductsSubfamilyChartsData();
+            const charts = response;
+            setProductSubfamilyChartData(
+                charts.map(item => ({
+                    name: item.name,
+                    value: item.total
+                }))
+            )
+            console.log("Subfamilies in fetch :", charts);
+        }
+        catch (err) {
+            setError(err);
+            toast.error("Failed to fetch product subfamily chart data");
+            throw err;
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -185,6 +276,15 @@ export function useAdmin() {
         setSort,
         setPageOnPrev,
         setPageOnNext,
+
+        userStats,
+        productStats,
+        productBrandChartData,
+        productSubfamilyChartData,
+        fetchUserStats,
+        fetchProductStats,
+        fetchProductBrandChartData,
+        fetchProductSubfamilyChartData,
 
     };
 

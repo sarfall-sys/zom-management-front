@@ -26,10 +26,12 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/*Public routes */}
-      <Route path="/" element={<Login />} />
+      {/* Public routes */}
+      <Route path="/" element={<ProtectedRoute fallback={<Login />}><Dashboard /></ProtectedRoute>} />
+      <Route path="/login" element={<Login />} />
       <Route path="unauthorized" element={<Unauthorized />} />
 
-      {/*Admin */}
+      {/* Admin */}
       <Route path="admin" element={<RoleRoute allowedRoles={[1]} />}>
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
@@ -90,14 +92,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+   
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

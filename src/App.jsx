@@ -6,6 +6,8 @@ import { useThemeContext } from "./context/ThemeContext";
 import { useAuthContext } from "./context/AuthContext";
 import SidebarLayout from "./components/layouts/SidebarLayout";
 import { Navigate } from "react-router-dom";
+import AdminLayout from "./components/layouts/AdminLayout";
+import UserLayout from "./components/layouts/UserLayout";
 
 function App() {
   const { dark, setDark } = useThemeContext();
@@ -48,7 +50,7 @@ function App() {
       </header>
 
       <main className="flex gap-4 p-4">
-        {user && <SidebarLayout />}
+        {user && (user.role_id === 1 ? <AdminLayout /> : <UserLayout />)}
 
         <div className="flex-1 p-6 border bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark rounded-xl">
           <AppRoutes />

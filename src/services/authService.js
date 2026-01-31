@@ -1,6 +1,5 @@
 import apiService from "./apiService";
 
-
 class AuthService {
 
     async login(credentials) {

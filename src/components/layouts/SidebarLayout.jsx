@@ -6,44 +6,17 @@ import {
   SidebarLogo,
 } from "flowbite-react";
 import {
-  HiArrowSmLeft,
-  HiArrowSmRight,
-  HiChartPie,
-  HiInbox,
-  HiShoppingBag,
-  HiTable,
-  HiUser,
-  HiViewBoards,
+
   HiOutlineTemplate,
+
+  
 } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-function SidebarLayout() {
-  const navigate = useNavigate();
+function SidebarLayout({routes}) {
   const [open, setOpen] = useState(true);
-
-  const { logout } = useAuthContext();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-  const routes = [
-    { name: "Dashboard", icon: HiChartPie, to: "/dashboard" },
-    { name: "Products", icon: HiViewBoards, to: "/products" },
-    { name: "Brands", icon: HiArrowSmRight, to: "/brands" },
-    { name: "Banners", icon: HiInbox, to: "/banners" },
-    { name: "Families", icon: HiUser, to: "/families" },
-    { name: "Subfamilies", icon: HiShoppingBag, to: "/subfamilies" },
-    { name: "Categories", icon: HiUser, to: "/categories" },
-    { name: "Subcategories", icon: HiShoppingBag, to: "/subcategories" },
-  ];
 
   return (
     <div>

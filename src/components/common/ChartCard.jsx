@@ -1,11 +1,19 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer ,Pie, PieChart} from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Pie,
+  PieChart,
+} from "recharts";
 
-function ChartCard({title, data,chartType}) {
-
-  if(chartType==="pie"){
-    return ( 
-      <>
-        <h3 className="text-lg font-medium mb-4">{title}</h3>
+function ChartCard({ title, data, chartType }) {
+  if (chartType === "pie") {
+    return (
+      <div>
+        <h3 className="mb-4 font-bold text-md">{title}</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -21,14 +29,14 @@ function ChartCard({title, data,chartType}) {
             <Tooltip />
           </PieChart>
         </ResponsiveContainer>
-      </>
-    )
+      </div>
+    );
   }
 
-  if(chartType==="bar"){
+  if (chartType === "bar") {
     return (
-      <>
-        <h3 className="text-lg font-medium mb-4">{title}</h3>
+      <div>
+        <h3 className="mb-4 font-bold text-md">{title}</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>
             <XAxis dataKey="name" />
@@ -37,10 +45,10 @@ function ChartCard({title, data,chartType}) {
             <Bar dataKey="value" fill="#8884d8" />
           </BarChart>
         </ResponsiveContainer>
-      </>
-    )
+      </div>
+    );
   }
   return null;
 }
 
-export default ChartCard
+export default ChartCard;
