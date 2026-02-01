@@ -1,9 +1,11 @@
 import { useAdmin } from "../../hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Loader from "../../components/common/Loader";
+
 function UserCreate() {
   const navigate = useNavigate();
-  const { roles, createUser, fetchRoles } = useAdmin();
+  const { roles, loading, error, createUser, fetchRoles } = useAdmin();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -43,6 +45,8 @@ function UserCreate() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-bg-light dark:bg-bg-dark">
       <section className="container">
+
+        {error && <p className="text-red-400">{error.message}</p>}
         <h2 className="mb-6 text-2xl font-bold text-text-light dark:text-text-dark">
           Create User
         </h2>
@@ -64,7 +68,7 @@ function UserCreate() {
                   {field.options.map((option, index) => (
                     <label
                       key={option.id}
-                      className={`flex items-center text-text-light dark:text-text-dark gap-2 px-4 py-2 border border-gray-400 rounded cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-900 ${index === 0 ? "bg-green-200" : index === 1 ? "bg-red-200" : "bg-yellow-200"}`}
+                      className={`flex items-center gap-2 px-4 py-2 border border-gray-600 rounded cursor-pointer hover:bg-indigo-900 ${index === 0 ? "bg-green-900" : index === 1 ? "bg-red-900" : "bg-yellow-900"}`}
                     >
                       <input
                         type="radio"
@@ -87,7 +91,7 @@ function UserCreate() {
                   name={field.name}
                   value={formData.name}
                   onChange={handleChange}
-                    className="w-full p-2 border border-gray-600 rounded bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark"
+                  className="w-full p-2 border border-gray-600 rounded bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark"
                   required={field.required}
                 />
               )}

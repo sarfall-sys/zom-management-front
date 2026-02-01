@@ -78,18 +78,18 @@ function UserList() {
       </div>
 
       {users.length > 0 && (
-        <table className="min-w-full overflow-hidden border border-gray-200 rounded-lg bg-bg-light dark:bg-bg-dark">
+        <table className="min-w-full overflow-hidden rounded-lg bg-bg-light dark:bg-bg-dark">
           <thead>
             <tr>
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="px-4 py-2 text-sm font-semibold text-left text-gray-700 bg-gray-100 border-b border-gray-200"
+                  className="px-4 py-2 text-sm font-semibold text-left border-b border-gray-200 text-text-light dark:text-text-dark bg-bg-light dark:bg-bg-dark"
                 >
                   {col.label}
                 </th>
               ))}
-              <th className="px-4 py-2 bg-gray-100 border-b border-gray-200"></th>
+              <th className="px-4 py-2 border-b border-gray-200 bg-bg-light dark:bg-bg-dark"></th>
             </tr>
           </thead>
           <tbody>
@@ -98,21 +98,21 @@ function UserList() {
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200"
+                    className="px-4 py-2 text-sm border-b border-gray-200 text-text-light dark:text-text-dark"
                   >
                     {user[col.key]}
                   </td>
                 ))}
-                <td className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
+                <td className="px-4 py-2 text-sm border-b border-gray-200 text-text-light dark:text-text-dark">
                   <button
                     onClick={() => handleEdit(user.id)}
-                    className="mr-4 text-blue-600 hover:text-blue-800"
+                    className="px-2 py-1 mr-4 text-blue-600 bg-blue-200 rounded-full hover:text-blue-800"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(user.id)}
-                    className="text-red-600 hover:text-red-800"
+                    className="px-2 py-1 text-red-600 bg-red-200 rounded-full hover:text-red-800"
                   >
                     Delete
                   </button>

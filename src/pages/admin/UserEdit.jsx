@@ -33,7 +33,7 @@ function UserEdit() {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-    [name]: name === "role_id" ? Number(value) : value,
+      [name]: name === "role_id" ? Number(value) : value,
     }));
   };
 
@@ -64,15 +64,18 @@ function UserEdit() {
 
         {error && <p className="text-red-400">{error.message}</p>}
         {/*Customized user form*/}
-        <div className="">
+        <h2 className="mb-6 text-2xl font-bold text-text-light dark:text-text-dark">
+          Edit User
+        </h2>
+
           <form
             onSubmit={handleUpdate}
-            className="max-w-md p-6 mx-auto border border-gray-600 rounded shadow bg-bg-light dark:bg-bg-dark dark:border-border-dark"
+            className="max-w-md p-6 mx-auto bg-gray-800 border border-gray-700 rounded shadow"
           >
             {fields.map((field) => (
               <div className="mb-4" key={field.name}>
                 <label
-                  className="block mb-2 font-medium text-text-light dark:text-text-dark"
+                  className="block mb-2 font-medium text-gray-200"
                   htmlFor={field.name}
                 >
                   {field.label}
@@ -82,21 +85,17 @@ function UserEdit() {
                     {field.options.map((option, index) => (
                       <label
                         key={option.id}
-                        className={`flex items-center gap-2 px-4 py-2 border border-gray-400 rounded cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-900 ${index === 0 ? "bg-green-200" : index === 1 ? "bg-red-200" : "bg-yellow-200"}`}
+                        className={`flex items-center gap-2 px-4 py-2 border border-gray-600 rounded cursor-pointer hover:bg-indigo-900 ${index === 0 ? "bg-green-900" : index === 1 ? "bg-red-900" : "bg-yellow-900"}`}
                       >
                         <input
                           type="radio"
                           name={field.name}
                           value={option.id}
-                          checked={
-                            formData[field.name] === option.id
-                          }
+                          checked={formData[field.name] === option.id}
                           onChange={handleChange}
                           required={field.required}
                         />
-                        <span className="text-text-light dark:text-text-dark">
-                          {option.name}
-                        </span>
+                        <span className="text-gray-200">{option.name}</span>
                       </label>
                     ))}
                   </div>
@@ -106,7 +105,7 @@ function UserEdit() {
                     id={field.name}
                     name={field.name}
                     value={formData[field.name]}
-                    className="w-full p-2 border border-gray-600 rounded bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark"
+                    className="w-full p-2 text-gray-200 bg-gray-700 border border-gray-600 rounded"
                     required={field.required}
                     onChange={handleChange}
                   />
@@ -121,7 +120,7 @@ function UserEdit() {
               Update User
             </button>
           </form>
-        </div>
+        
       </section>
     </div>
   );
