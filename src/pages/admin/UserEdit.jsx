@@ -33,7 +33,7 @@ function UserEdit() {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+    [name]: name === "role_id" ? Number(value) : value,
     }));
   };
 
@@ -51,7 +51,7 @@ function UserEdit() {
     {
       name: "role_id",
       label: "Role",
-      type: "select",
+      type: "radio",
       options: roles,
       required: true,
     },
@@ -77,23 +77,28 @@ function UserEdit() {
                 >
                   {field.label}
                 </label>
-                {field.type === "select" ? (
-                  <div className="p-4 border border-gray-600 rounded">
-                    <select
-                      id={field.name}
-                      name={field.name}
-                      value={formData[field.name]}
-                      className="w-full p-2 border border-gray-600 rounded bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark"
-                      required={field.required}
-                      onChange={handleChange}
-                    >
-                      <option value="">Select {field.label}</option>
-                      {field.options.map((option) => (
-                        <option key={option.id} value={option.id}>
+                {field.type === "radio" ? (
+                  <div className="flex flex-wrap gap-2">
+                    {field.options.map((option, index) => (
+                      <label
+                        key={option.id}
+                        className={`flex items-center gap-2 px-4 py-2 border border-gray-400 rounded cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-900 ${index === 0 ? "bg-green-200" : index === 1 ? "bg-red-200" : "bg-yellow-200"}`}
+                      >
+                        <input
+                          type="radio"
+                          name={field.name}
+                          value={option.id}
+                          checked={
+                            formData[field.name] === option.id
+                          }
+                          onChange={handleChange}
+                          required={field.required}
+                        />
+                        <span className="text-text-light dark:text-text-dark">
                           {option.name}
-                        </option>
-                      ))}
-                    </select>
+                        </span>
+                      </label>
+                    ))}
                   </div>
                 ) : (
                   <input
