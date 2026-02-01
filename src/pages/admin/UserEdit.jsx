@@ -2,22 +2,50 @@ import { useAdmin } from "../../hooks/useAdmin";
 import Loader from "../../components/common/Loader";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 function UserEdit() {
-  const { user, roles , fetchUserById, updateUser, loading, error , } = useAdmin();
-
   const { id } = useParams();
+  const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
+  const { user, fetchUserById, updateUser, loading, error, fetchRoles, roles } =
+    useAdmin();
 
   useEffect(() => {
     fetchUserById(id);
   }, [id]);
 
-  const handleUpdate = async (formData) => {
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        role_id: user.role_id || "",
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdate = async (event) => {
+    event.preventDefault();
     await updateUser(id, formData);
+    // Optionally, navigate back to the user list or show a success message
+    navigate("/admin/users");
   };
 
   const fields = [
-    { name: "username", label: "Username", type: "text", required: true },
+    { name: "name", label: "Name", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
 
     {
@@ -29,9 +57,8 @@ function UserEdit() {
     },
   ];
 
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    <div className="flex items-center justify-center min-h-screen bg-bg-light dark:bg-bg-dark">
       <section className="container">
         {loading && <Loader />}
 
@@ -40,39 +67,43 @@ function UserEdit() {
         <div className="">
           <form
             onSubmit={handleUpdate}
-            className="max-w-md mx-auto bg-gray-800 p-6 rounded shadow"
+            className="max-w-md p-6 mx-auto border border-gray-600 rounded shadow bg-bg-light dark:bg-bg-dark dark:border-border-dark"
           >
             {fields.map((field) => (
               <div className="mb-4" key={field.name}>
                 <label
-                  className="block text-gray-300 mb-2"
+                  className="block mb-2 font-medium text-text-light dark:text-text-dark"
                   htmlFor={field.name}
                 >
                   {field.label}
                 </label>
                 {field.type === "select" ? (
-                  <select
-                    id={field.name}
-                    name={field.name}
-                    defaultValue={user ? user[field.name] : ""}
-                    className="w-full border border-gray-600 bg-gray-700 text-white p-2 rounded"
-                    required={field.required}
-                  >
-                    <option value="">Select {field.label}</option>
-                    {field.options.map((option) => (
-                      <option key={option} value={option}>
-                        {option.charAt(0).toUpperCase() + option.slice(1)}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="p-4 border border-gray-600 rounded">
+                    <select
+                      id={field.name}
+                      name={field.name}
+                      value={formData[field.name]}
+                      className="w-full p-2 border border-gray-600 rounded bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark"
+                      required={field.required}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select {field.label}</option>
+                      {field.options.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 ) : (
                   <input
                     type={field.type}
                     id={field.name}
                     name={field.name}
-                    defaultValue={user ? user[field.name] : ""}
-                    className="w-full border border-gray-600 bg-gray-700 text-white p-2 rounded"
+                    value={formData[field.name]}
+                    className="w-full p-2 border border-gray-600 rounded bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark"
                     required={field.required}
+                    onChange={handleChange}
                   />
                 )}
               </div>
@@ -80,7 +111,7 @@ function UserEdit() {
 
             <button
               type="submit"
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+              className="px-4 py-2 text-white bg-indigo-600 rounded hover:bg-indigo-700"
             >
               Update User
             </button>

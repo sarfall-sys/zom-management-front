@@ -5,10 +5,12 @@ import Filter from "../../components/common/Filter";
 import Pagination from "../../components/common/Pagination";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import Loader from "../../components/common/Loader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 function UserList() {
-  const { users, loading, error, deleteUser, meta,search, setSearch, sort, setSort, order, page} = useAdmin();
+  const { fetchUsers, users, loading, error, deleteUser, meta,search, setSearch, sort,page,debouncedSearch, setSort, order,setPageOnPrev,setPageOnNext} = useAdmin();
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const columns = [
@@ -20,8 +22,13 @@ function UserList() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchUsers();
+  }, [debouncedSearch, sort, order, page]);
+
+
   const handleEdit = (userId) => {
-    navigate(`/users/edit/${userId}`);
+    navigate(`/admin/users/edit/${userId}`);
   };
 
   const handleDelete = async (userId) => {
@@ -42,8 +49,8 @@ function UserList() {
       <ToastContainer />
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Users</h1>
-        <Link to="/users/create">
-          <button className="bg-indigo-400 text-white px-4 py-2 rounded">
+        <Link to="/admin/users/create">
+          <button className="px-4 py-2 text-white bg-indigo-400 rounded">
             Add User
           </button>
         </Link>
@@ -71,18 +78,18 @@ function UserList() {
       </div>
 
       {users.length > 0 && (
-        <table className="min-w-full bg-bg-light dark:bg-bg-dark border border-gray-200 rounded-lg overflow-hidden">
+        <table className="min-w-full overflow-hidden border border-gray-200 rounded-lg bg-bg-light dark:bg-bg-dark">
           <thead>
             <tr>
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-700"
+                  className="px-4 py-2 text-sm font-semibold text-left text-gray-700 bg-gray-100 border-b border-gray-200"
                 >
                   {col.label}
                 </th>
               ))}
-              <th className="py-2 px-4 border-b border-gray-200 bg-gray-100"></th>
+              <th className="px-4 py-2 bg-gray-100 border-b border-gray-200"></th>
             </tr>
           </thead>
           <tbody>
@@ -91,15 +98,15 @@ function UserList() {
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className="py-2  px-4 border-b border-gray-200 text-sm text-gray-700"
+                    className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200"
                   >
                     {user[col.key]}
                   </td>
                 ))}
-                <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-700">
+                <td className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
                   <button
                     onClick={() => handleEdit(user.id)}
-                    className="text-blue-600 hover:text-blue-800 mr-4"
+                    className="mr-4 text-blue-600 hover:text-blue-800"
                   >
                     Edit
                   </button>

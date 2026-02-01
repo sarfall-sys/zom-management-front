@@ -52,8 +52,15 @@ export function useAdmin() {
         setLoading(true);
         setError(null);
         try {
-            const user = await adminService.getUser(userId);
+            const response = await adminService.getUser(userId);
+            const user = response || response.data;
             setUser(user);
+            setRoles([{
+                ...user,
+                role_id: user.role_id,
+            }]
+            )
+            
         } catch (err) {
             setError(err);
             toast.error("Failed to fetch user");
@@ -119,7 +126,7 @@ export function useAdmin() {
         }
     }
 
-    async function getRoles() {
+    async function fetchRoles() {
         setLoading(true);
         setError(null);
         try {
@@ -251,10 +258,10 @@ export function useAdmin() {
         updateParams({ page: currentPage + 1 });
     };
 
-    useEffect(() => {
+  /*   useEffect(() => {
         fetchUsers();
     }, [debouncedSearch, sort, order, page]);
-
+ */
     return {
         loading,
         error,
@@ -267,7 +274,7 @@ export function useAdmin() {
         createUser,
         updateUser,
         deleteUser,
-        getRoles,
+        fetchRoles,
         search,
         sort,
         order,
@@ -285,6 +292,8 @@ export function useAdmin() {
         fetchProductStats,
         fetchProductBrandChartData,
         fetchProductSubfamilyChartData,
+
+        debouncedSearch,
 
     };
 
