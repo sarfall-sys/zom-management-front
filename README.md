@@ -7,7 +7,10 @@ The system includes an **Admin Panel**, dashboards, user roles (Admin, Staff, Ma
 
 Backend:https://github.com/sarfall-sys/zom-management
 ---
+Demo Live:
 
+🎥https://drive.google.com/file/d/1kuL4c-uccy9ju0U0yL6IMLEugWH-1XXe/view?usp=sharing
+---
 ## 🚀 Features
 
 ### 🧱 Core Architecture
