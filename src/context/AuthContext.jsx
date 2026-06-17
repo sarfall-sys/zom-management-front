@@ -10,7 +10,23 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+    useEffect(() => {
+    const initAuth = async () => {
+      try {
+        // Intentamos traer al usuario de Laravel silenciosamente al arrancar
+        const userData = await authService.me();
+        setUser(userData);
+      } catch (err) {
+        // Si da 401, significa que no hay sesión. No pasa nada, se queda en null.
+        setUser(null);
+      } finally {
+        // ESTO es lo que salva tu app del loading infinito:
+        setLoading(false);
+      }
+    };
 
+    initAuth();
+  }, []);
 
   const login = async (credentials) => {
     setLoading(true);
@@ -18,8 +34,8 @@ export const AuthProvider = ({ children }) => {
 
     try {
       await authService.login(credentials);
-      const user = await checkAuth();
-
+      const userData = await authService.me();
+      setUser(userData);
       return user;
     } catch (err) {
       setError(err);
@@ -34,7 +50,9 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       await authService.register(data);
-      await checkAuth();
+      const userData = await authService.me();
+      setUser(userData);
+      return user;
     } catch (err) {
       setError(err);
       throw err;
@@ -57,22 +75,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const checkAuth = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const user = await authService.me();
-      setUser(user);
-      return user;
-    } catch (err) {
-      setError(err);
-      setUser(null);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Agrega esto dentro de tu AuthProvider
 
 
   const values = {
@@ -81,7 +84,6 @@ export const AuthProvider = ({ children }) => {
     error,
     login,
     logout,
-    checkAuth,
     register,
   };
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;

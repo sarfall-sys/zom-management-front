@@ -8,7 +8,7 @@ import {
   HiTable,
   HiViewBoards,
   HiOutlineTemplate,
-  HiUsers,
+  HiUser,
 
   
 } from "react-icons/hi";

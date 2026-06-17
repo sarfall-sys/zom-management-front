@@ -36,8 +36,8 @@ function Login() {
 
     try {
       await login(formData);
-    } catch {
-      
+    } finally {
+      // Optionally, you can handle post-login actions here, such as showing a success message or redirecting.
     }
   };
 
