@@ -33,7 +33,6 @@ export const getProductFields = ({ subfamilies = [], brands = [] }) => {
       label: "Price",
       type: "number",
       required: true,
-      step: "0.01",
       min: "0"
     },
     {
@@ -41,7 +40,6 @@ export const getProductFields = ({ subfamilies = [], brands = [] }) => {
       label:"Sale Price",
       type:"number",
       required:false,
-      step:"0.01",
       min:"0"
 
     },

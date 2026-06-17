@@ -1,4 +1,3 @@
-import HomePage from "../pages/HomePage";
 import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
 
@@ -22,23 +21,50 @@ import UserList from "../pages/admin/UserList";
 import RoleRoute from "./RoleRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../pages/Dashboard";
+import HomePage from "../pages/HomePage";
+import HomeRedirect from "../components/HomeRedirect";
 export default function AppRoutes() {
   return (
     <Routes>
-      {/*Public routes */}
       {/* Public routes */}
-      <Route path="/" element={<ProtectedRoute fallback={<Login />}><Dashboard /></ProtectedRoute>} />
+      <Route path="/" element={<HomeRedirect />} />
+
       <Route path="/login" element={<Login />} />
-      <Route path="unauthorized" element={<Unauthorized />} />
+
+      <Route path="/unauthorized" element={<Unauthorized />} />
+
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* User Dashboard */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Admin */}
-      <Route path="admin" element={<RoleRoute allowedRoles={[1]} />}>
-        <Route element={<AdminLayout />}>
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="users/create" element={<UserCreate />} />
-          <Route path="users/edit/:id" element={<UserEdit />} />
-          <Route path="users" element={<UserList />} />
-        </Route>
+      <Route
+        path="admin"
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="users/create" element={<UserCreate />} />
+        <Route path="users/edit/:id" element={<UserEdit />} />
+        <Route path="users" element={<UserList />} />
       </Route>
 
       {/*Products */}
@@ -92,7 +118,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
-   
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

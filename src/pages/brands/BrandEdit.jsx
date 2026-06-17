@@ -5,6 +5,7 @@ import { getBrandFields } from "../../config/getBrandFields";
 import Form from "../../components/common/Form";
 import Loader from "../../components/common/Loader";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function BrandEdit() {
   const { id } = useParams();
@@ -16,8 +17,9 @@ function BrandEdit() {
     updateBrand,
     countries,
     fetchCountries,
-    
   } = useBrands();
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBrand(id);
@@ -31,6 +33,7 @@ function BrandEdit() {
 
   const handleUpdate = async (formData) => {
     await updateBrand(id, formData);
+    navigate("/brands");
   };
 
   return (

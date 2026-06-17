@@ -8,13 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 function Login() {
   const { login, loading, error, user } = useAuthContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-    <Navigate to="/dashboard" replace />;
+      navigate("/home");
     }
   }, [user]);
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,7 +36,9 @@ function Login() {
 
     try {
       await login(formData);
-    } catch {}
+    } catch {
+      
+    }
   };
 
   return (
@@ -90,7 +93,8 @@ function Login() {
             disabled={loading}
             className="w-full py-2 text-white transition rounded-lg bg-primary-light dark:bg-primary-dark hover:opacity-90"
           >
-            {loading ? "Logging in..." : "Login"}
+            
+            {loading ? <Loader /> : "Login"}
           </button>
           {error && (
             <p className="mt-4 text-sm text-red-600">

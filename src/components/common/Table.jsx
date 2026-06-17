@@ -4,7 +4,7 @@ function Table({ columns, data, onEdit, onDelete }) {
   return (
     <>
       <section>
-        <table>
+        <table className="min-w-full overflow-hidden rounded-lg ">
           <thead>
             <tr>
               {columns.map((col) => (
@@ -30,12 +30,15 @@ function Table({ columns, data, onEdit, onDelete }) {
                     <Button
                       variant="success"
                       onClick={() => onEdit(item.id)}
-                      className="mr-2"
+                      className="m-1"
                     >
                       Edit
                     </Button>
 
-                    <Button variant="danger" onClick={() => onDelete(item.id)}>
+                    <Button
+                      variant="danger"
+                      onClick={() => onDelete(item.id)}
+                    >
                       Delete
                     </Button>
                   </td>

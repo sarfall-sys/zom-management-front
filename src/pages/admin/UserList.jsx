@@ -5,19 +5,36 @@ import Filter from "../../components/common/Filter";
 import Pagination from "../../components/common/Pagination";
 import ConfirmModal from "../../components/common/ConfirmModal";
 import Loader from "../../components/common/Loader";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+
 function UserList() {
-  const { fetchUsers, users, loading, error, deleteUser, meta,search, setSearch, sort,page,debouncedSearch, setSort, order,setPageOnPrev,setPageOnNext} = useAdmin();
+  const {
+    fetchUsers,
+    users,
+    loading,
+    error,
+    deleteUser,
+    meta,
+    search,
+    setSearchTerm,
+    sort,
+    page,
+    debouncedSearch,
+    setSort,
+    order,
+    setPageOnPrev,
+    setPageOnNext,
+  } = useAdmin();
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const columns = [
     { key: "id", label: "ID" },
     { key: "name", label: "Name" },
     { key: "email", label: "Email" },
-    { key: "role", label: "Role" },
+    { key: "role_name", label: "Role" },
   ];
 
   const navigate = useNavigate();
@@ -25,7 +42,6 @@ function UserList() {
   useEffect(() => {
     fetchUsers();
   }, [debouncedSearch, sort, order, page]);
-
 
   const handleEdit = (userId) => {
     navigate(`/admin/users/edit/${userId}`);
@@ -42,11 +58,16 @@ function UserList() {
 
   const handleSort = (column) => {
     setSort(column);
-  }
+  };
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
 
   return (
     <>
       <ToastContainer />
+      
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Users</h1>
         <Link to="/admin/users/create">
@@ -70,10 +91,13 @@ function UserList() {
 
       <div className="flex justify-between grid-cols-1 gap-4 mb-4 flex-grid md:grid-cols-2">
         <div className="mb-4">
-          <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
+          <SearchBar
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
         </div>
         <div className="mb-4">
-          <Filter  onSort={handleSort} activeSort={sort} order={order} />
+          <Filter onSort={handleSort} activeSort={sort} order={order} />
         </div>
       </div>
 
@@ -84,12 +108,12 @@ function UserList() {
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="px-4 py-2 text-sm font-semibold text-left border-b border-gray-200 text-text-light dark:text-text-dark bg-bg-light dark:bg-bg-dark"
+                  className="px-4 py-2 text-sm font-semibold text-center border-b border-gray-200 text-text-light dark:text-text-dark bg-bg-light dark:bg-bg-dark"
                 >
                   {col.label}
                 </th>
               ))}
-              <th className="px-4 py-2 border-b border-gray-200 bg-bg-light dark:bg-bg-dark"></th>
+              <th className="px-4 py-2 border-b border-gray-200 bg-bg-light dark:bg-bg-dark">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -122,7 +146,11 @@ function UserList() {
           </tbody>
         </table>
       )}
-      <Pagination meta={meta} setPageOnPrev={setPageOnPrev} setPageOnNext={setPageOnNext} />
+      <Pagination
+        meta={meta}
+        setPageOnPrev={setPageOnPrev}
+        setPageOnNext={setPageOnNext}
+      />
 
       {openConfirmModal && (
         <ConfirmModal

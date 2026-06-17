@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import { adminService } from "../services/adminService";
-import roleService from "../services/roleService";
-import { data, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "./useDebounce";
 import { useEffect, useState } from "react";
 
@@ -24,19 +23,30 @@ export function useAdmin() {
     const [productBrandChartData, setProductBrandChartData] = useState([]);
     const [productSubfamilyChartData, setProductSubfamilyChartData] = useState([]);
 
-
     const debouncedSearch = useDebounce(search, 600);
 
-    const fetchUsers = async () => {
+    const updateParams = (params) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            Object.entries(params).forEach(([k, v]) => {
+                if (!v) next.delete(k);
+                else next.set(k, v);
+            });
+            return next;
+        });
+    };
+
+    const fetchUsers = async (params = {}) => {
         setLoading(true);
         setError(null);
         try {
             const response = await adminService.getUsers({
                 search: debouncedSearch,
                 // Add other params like sort, order, page if needed
-                sort: searchParams.get("sort") || "name",
-                order: searchParams.get("order") || "asc",
-                page: Number(searchParams.get("page") || 1),
+                sort,
+                order,
+                page,
+                ...params,
             });
             setUsers(response.data);
             setMeta(response.meta);
@@ -60,7 +70,7 @@ export function useAdmin() {
                 role_id: user.role_id,
             }]
             )
-            
+
         } catch (err) {
             setError(err);
             toast.error("Failed to fetch user");
@@ -78,11 +88,17 @@ export function useAdmin() {
             const newUser = await adminService.createUser(userData);
             setUsers((prev) => [...prev, newUser]);
             toast.success("User created successfully");
-            return newUser;
+            await fetchUsers(); // Refresh the user list after creation
         } catch (err) {
+            const status = err.response?.status;
+            if (status === 401) {
+                toast.error("You are not authorized to perform this action");
+            } else if (status === 419) {
+                toast.error("Session expired. Please refresh the page.");
+            } else {
+                toast.error(err.response?.data?.message || "Failed to create brand");
+            }
             setError(err);
-            toast.error("Failed to create user: " + (err.message || ""));
-            throw err;
         }
         finally {
             setLoading(false);
@@ -95,15 +111,23 @@ export function useAdmin() {
         setError(null);
         try {
             const updatedUser = await adminService.updateUser(userId, updatedData);
-            setUsers((prev) =>
-                prev.map((user) => (user.id === userId ? updatedUser : user))
-            );
             toast.success("User updated successfully");
-            return updatedUser;
+            await fetchUsers();
+
         } catch (err) {
             setError(err);
-            toast.error("Failed to update user: " + (err.message || ""));
-            throw err;
+            const status = err.response?.status;
+
+            if (status === 401) {
+                toast.error("You are not authorized to perform this action");
+            } else if (status === 419) {
+                toast.error("Session expired. Please refresh the page.");
+            } else {
+                toast.error(
+                    err.response?.data?.message || "Failed to update user"
+                );
+            }
+
         } finally {
             setLoading(false);
         }
@@ -175,7 +199,6 @@ export function useAdmin() {
         }
     }
 
-
     async function fetchProductBrandChartData() {
         setLoading(true);
         setError(null);
@@ -226,17 +249,6 @@ export function useAdmin() {
         }
     }
 
-    const updateParams = (params) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            Object.entries(params).forEach(([k, v]) => {
-                if (!v) next.delete(k);
-                else next.set(k, v);
-            });
-            return next;
-        });
-    };
-
     const setSearchTerm = (term) => {
         updateParams({ search: term, page: 1 });
     };
@@ -258,10 +270,10 @@ export function useAdmin() {
         updateParams({ page: currentPage + 1 });
     };
 
-  /*   useEffect(() => {
+    useEffect(() => {
         fetchUsers();
     }, [debouncedSearch, sort, order, page]);
- */
+
     return {
         loading,
         error,
@@ -293,7 +305,6 @@ export function useAdmin() {
         fetchProductBrandChartData,
         fetchProductSubfamilyChartData,
 
-        debouncedSearch,
 
     };
 

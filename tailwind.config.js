@@ -26,8 +26,8 @@ export default {
           mutedDark: '#9CA3AF',
         },
         primary: {
-          light: '#2563EB',
-          dark: '#3B82F6',
+          light: '#05B6AE',
+          dark: '#06D2C8',
         },
         border: {
           light: '#E5E7EB',

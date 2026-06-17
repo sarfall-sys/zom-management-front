@@ -142,6 +142,7 @@ export function useBrands() {
             setLoading(false);
         }
     });
+
     const updateBrand = (async (id, data) => {
         setLoading(true);
         setError(null);
@@ -256,7 +257,6 @@ export function useBrands() {
         deleteBrand,
 
         meta,
-
         search,
         order,
         sort,

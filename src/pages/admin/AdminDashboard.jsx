@@ -47,20 +47,24 @@ function AdminDashboard() {
             <StatsCard
               title="Total Users"
               value={userStats.total_users || "1,234"}
+              color="bg-blue-500"
             />
-            <StatsCard title="Managers" value={userStats.managers || "1,234"} />
-            <StatsCard title="Staff" value={userStats.staff || "1,234"} />
+            <StatsCard title="Managers" value={userStats.managers || "1,234"} color="bg-purple-500" />
+            <StatsCard title="Staff" value={userStats.staff || "1,234"} color="bg-indigo-500" />
             <StatsCard
               title="Total Products"
               value={productStats.total_products || "567"}
+              color="bg-green-500"
             />
             <StatsCard
               title="Available Products"
               value={productStats.available || "567"}
+              color="bg-emerald-500"
             />
             <StatsCard
               title="Unavailable Products"
               value={productStats.unavailable || "0"}
+              color="bg-red-500"
             />
           </div>
         </DashboardCard>

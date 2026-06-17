@@ -1,7 +1,7 @@
 import { useAdmin } from "../../hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Loader from "../../components/common/Loader";
+import { ToastContainer } from "react-toastify";
 
 function UserCreate() {
   const navigate = useNavigate();
@@ -13,8 +13,11 @@ function UserCreate() {
   });
 
   const handleSubmit = async (formData) => {
-    await createUser(formData);
+      await createUser(formData); 
+
     navigate("/admin/users");
+
+    
   };
 
   useEffect(() => {
@@ -44,6 +47,7 @@ function UserCreate() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-bg-light dark:bg-bg-dark">
+      <ToastContainer />
       <section className="container">
 
         {error && <p className="text-red-400">{error.message}</p>}

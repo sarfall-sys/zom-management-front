@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
 import { FaSun, FaMoon } from "react-icons/fa";
 import AppRoutes from "./routes/AppRoutes";
 import "./App.css";
 import { useThemeContext } from "./context/ThemeContext";
 import { useAuthContext } from "./context/AuthContext";
-import SidebarLayout from "./components/layouts/SidebarLayout";
 import { Navigate } from "react-router-dom";
 import AdminLayout from "./components/layouts/AdminLayout";
 import UserLayout from "./components/layouts/UserLayout";
@@ -17,7 +15,7 @@ function App() {
     // Logout logic can be added here
     try {
       await logout();
-      <Navigate to="/" replace />;
+      <Navigate to="/login" replace />;
     } catch (error) {
       console.error("Logout failed:", error);
     }

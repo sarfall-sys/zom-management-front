@@ -10,38 +10,20 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Get CSRF cookie
+
+
   const login = async (credentials) => {
     setLoading(true);
     setError(null);
 
     try {
       await authService.login(credentials);
-      await checkAuth();
+      const user = await checkAuth();
+
+      return user;
     } catch (err) {
       setError(err);
       throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await authService.me();
-      setUser(response.data);
-    } catch (err) {
-      if (err.response?.status === 401) {
-        setUser(null); // not logged in → normal
-        return null;
-      }
-      throw err; // real error
     } finally {
       setLoading(false);
     }
@@ -74,6 +56,24 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  const checkAuth = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const user = await authService.me();
+      setUser(user);
+      return user;
+    } catch (err) {
+      setError(err);
+      setUser(null);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const values = {
     user,

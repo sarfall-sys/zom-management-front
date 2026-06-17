@@ -19,7 +19,7 @@ function ProductList() {
     error,
     deleteProduct,
     search,
-    setSearch,
+    setSearchTerm,
     sort,
     setSort,
     order,
@@ -33,15 +33,11 @@ function ProductList() {
   const [id, setId] = useState(null);
 
   const columns = [
+    { key: "id", label: "ID" },
     { key: "name", label: "Product Name" },
     { key: "sku", label: "SKU" },
-    { key: "slug", label: "Slug" },
-    { key: "is_active", label: "Is Active" },
-    { key: "is_on_sale", label: "Is On Sale" },
     { key: "price", label: "Price" },
     { key: "sale_price", label: "Sale Price" },
-    { key: "subfamily_name", label: "Subfamily" },
-    { key: "brand_name", label: "Brand" },
   ];
 
   const handleEdit = (productId) => {
@@ -56,15 +52,13 @@ function ProductList() {
   const handleDelete = async () => {
     try {
       await deleteProduct(id);
-
-      toast.success("Product deleted successfully");
     } finally {
       setOpenConfirmModal(false);
     }
   };
 
   const handleSearch = (term) => {
-    setSearch(term);
+    setSearchTerm(term);
   };
 
   const handleSort = (column) => {
@@ -82,13 +76,14 @@ function ProductList() {
   return (
     <>
       <ToastContainer />
+
       <CanManageProducts>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Products</h1>
-        <Link to="/products/create">
-          <Button variant="primary">Add Product</Button>
-        </Link>
-      </div>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold">Products</h1>
+          <Link to="/products/create">
+            <Button variant="primary">Add Product</Button>
+          </Link>
+        </div>
       </CanManageProducts>
 
       {error && (
@@ -96,6 +91,7 @@ function ProductList() {
           {error}
         </div>
       )}
+
       {loading && (
         <div className="my-4">
           <Loader />
@@ -107,12 +103,14 @@ function ProductList() {
           <SearchBar
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
+            
           />
         </div>
         <div className="mb-4">
           <Filter onSort={handleSort} activeSort={sort} order={order} />
         </div>
       </div>
+
       <CanManageProducts>
         <Table
           columns={columns}
@@ -130,14 +128,14 @@ function ProductList() {
 
       {openConfirmModal && (
         <ConfirmModal
+          open={openConfirmModal}
           title="Confirm Deletion"
           message="Are you sure you want to delete this product?"
-          onConfirm={async () => {
-            await handleDelete();
-            setOpenConfirmModal(false);
+          onConfirm={() => {
+            // Call the delete function here
+            handleDelete();
           }}
-          onCancel={() => setOpenConfirmModal(false)}
-          open={openConfirmModal}
+          onClose={() => setOpenConfirmModal(false)}
         />
       )}
     </>

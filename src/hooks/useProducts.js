@@ -82,11 +82,19 @@ export function useProducts() {
     try {
       const response = await productService.createProduct(data);
       // Optimistic update
-      setProducts(prev => [...prev, response.data.data]);
-      return response.data.data;
+      toast.success("Product created successfully");
+      await fetchProducts();
+
     } catch (err) {
       setError(err.message || 'Failed to create product');
-      console.error("Error creating product:", err);
+      const status = err.response?.status;
+      if (status === 401) {
+        toast.error("You are not authorized to perform this action");
+      } else if (status === 419) {
+        toast.error("Session expired. Please refresh the page.");
+      } else {
+        toast.error(err.response?.data?.message || "Failed to create product");
+      }
       throw err;
     } finally {
       setLoading(false);
@@ -99,11 +107,9 @@ export function useProducts() {
     setError(null);
     try {
       const response = await productService.updateProduct(id, data);
-      // Optimistic update
-      setProducts(prev =>
-        prev.map(product => product.id === id ? response.data : product)
-      );
-      return response.data;
+      toast.success("Product updated successfully");
+      await fetchProducts();
+
     } catch (err) {
       setError(err.message || 'Failed to update product');
       console.error("Error updating product:", err);
@@ -121,14 +127,22 @@ export function useProducts() {
     setError(null);
     try {
       await productService.deleteProduct(id);
-      // Optimistic update
-      setProducts(prev => prev.filter(product => product.id !== id));
-      return true;
+      toast.success("Product deleted successfully");
+      await fetchProducts();
+
     } catch (err) {
-      setError(err.message || 'Failed to delete product');
-      console.error("Error deleting product:", err);
-      // Refresh on error to ensure consistency
-      fetchProducts();
+      const status = err.response?.status;
+
+      if (status === 401) {
+        toast.error("You are not authorized to perform this action");
+      } else if (status === 419) {
+        toast.error("Session expired. Please refresh the page.");
+      } else {
+        toast.error(
+          err.response?.data?.message || "Failed to delete brand"
+        );
+      }
+
       throw err;
     } finally {
       setLoading(false);

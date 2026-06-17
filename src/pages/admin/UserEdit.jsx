@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+
 function UserEdit() {
   const { id } = useParams();
   const [formData, setFormData] = useState({});
@@ -59,6 +61,8 @@ function UserEdit() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-bg-light dark:bg-bg-dark">
+            <ToastContainer />
+
       <section className="container">
         {loading && <Loader />}
 

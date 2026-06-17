@@ -1,13 +1,14 @@
-import { useEffect,useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getProductFields } from "../../config/getProductFields";
 import { useProducts } from "../../hooks/useProducts";
 import Form from "../../components/common/Form";
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Loader from "../../components/common/Loader";
-
+import { useNavigate } from "react-router-dom";
 function ProductEdit() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const {
     product,
     loading,
@@ -43,6 +44,8 @@ function ProductEdit() {
 
   const handleUpdate = async (formData) => {
     await updateProduct(id, formData);
+
+    navigate("/products");
   };
 
   return (

@@ -17,12 +17,9 @@ function BrandCreate() {
 
   const handleSubmit = async (formData) => {
 
-    try{
       await storeBrand(formData);
 
-    }finally {
       navigate("/brands");
-    }
   }
   return (
     <>

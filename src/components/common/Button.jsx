@@ -8,7 +8,7 @@ function Button({
   className = "",
 }) {
   const baseStyles =
-    "px-4 py-2 rounded font-medium transition-colors duration-200";
+    "px-2 py-1 rounded font-medium transition-colors duration-200";
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700",
     success: "bg-green-600 text-white hover:bg-green-700",
