@@ -8,11 +8,19 @@ function HomeRedirect() {
 
   if (!user) {
     return <Navigate to="/login" replace />;
-  } else if (user.role_id === 1) {
-    return <Navigate to="/admin/dashboard" replace />;
-  } else if (user.role_id === 2 || user.role_id === 3) {
-    return <Navigate to="/user/dashboard" replace />;
-  }
+  } 
+
+  switch (user.role_id) {
+    case 1:
+      return <Navigate to="/admin/dashboard" replace />;
+    case 2:
+      return <Navigate to="/manager/dashboard" replace />;
+    case 3:
+      return <Navigate to="/dashboard" replace />;
+    default:
+      return <Navigate to="/unauthorized" replace />;
+  } 
+  
 }
 
 export default HomeRedirect;

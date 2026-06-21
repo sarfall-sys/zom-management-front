@@ -4,7 +4,7 @@ import "./App.css";
 import { useThemeContext } from "./context/ThemeContext";
 import { useAuthContext } from "./context/AuthContext";
 import { Navigate } from "react-router-dom";
-import AdminLayout from "./components/layouts/AdminLayout";
+import AdminSidebar from "./components/layouts/AdminSidebar";
 import UserLayout from "./components/layouts/UserLayout";
 
 function App() {
@@ -47,12 +47,11 @@ function App() {
         </div>
       </header>
 
-      <main className="flex gap-4 p-4">
-        {user && (user.role_id === 1 ? <AdminLayout /> : <UserLayout />)}
-
-        <div className="flex-1 p-6 border bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark rounded-xl">
-          <AppRoutes />
-        </div>
+      <main className="flex h-full gap-4 p-4 overflow-hidden">
+          {/* Add the sidebars */}
+          
+          {user && user.role_id === 1 && <AdminSidebar /> || user && user.role_id === 3 && <UserLayout />}
+          <AppRoutes/>
       </main>
     </div>
   );

@@ -15,6 +15,7 @@ import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 function SidebarLayout({routes}) {
   const [open, setOpen] = useState(true);
 

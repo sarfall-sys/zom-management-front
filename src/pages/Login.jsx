@@ -7,14 +7,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 function Login() {
-  const { login, loading, error, user } = useAuthContext();
+  const { login,error } = useAuthContext();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate("/home");
-    }
-  }, [user]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -32,18 +26,19 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loading) return;
 
     try {
-      await login(formData);
-    } finally {
-      // Optionally, you can handle post-login actions here, such as showing a success message or redirecting.
+      const userData = await login(formData);
+      navigate("/", { replace: true });
+ 
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
     <>
-      <section className="flex items-center justify-center min-h-screen bg-bg-light dark:bg-bg-dark">
+      <section className="flex items-center justify-center min-h-screen bg-bg-light dark:bg-bg-dark ">
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md p-6 border rounded-xl bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark"
@@ -90,11 +85,9 @@ function Login() {
           </div>
           <button
             type="submit"
-            disabled={loading}
             className="w-full py-2 text-white transition rounded-lg bg-primary-light dark:bg-primary-dark hover:opacity-90"
           >
-            
-            {loading ? <Loader /> : "Login"}
+            {"Login"}
           </button>
           {error && (
             <p className="mt-4 text-sm text-red-600">

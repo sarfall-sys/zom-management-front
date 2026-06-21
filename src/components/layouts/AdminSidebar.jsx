@@ -14,7 +14,7 @@ import {
   
 } from "react-icons/hi";
 
-function AdminLayout() {
+function AdminSidebar() {
   const data = [
     { name: "Dashboard", icon: HiChartPie, to: "/admin/dashboard" },
     { name: "Products", icon: HiViewBoards, to: "/products" },
@@ -33,4 +33,4 @@ function AdminLayout() {
   );
 }
 
-export default AdminLayout;
+export default AdminSidebar;

@@ -23,101 +23,58 @@ import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../pages/Dashboard";
 import HomePage from "../pages/HomePage";
 import HomeRedirect from "../components/HomeRedirect";
+import { useAuthContext } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
 export default function AppRoutes() {
+  const { user, loading } = useAuthContext();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-xl font-bold text-gray-500">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <Routes>
       {/* Public routes */}
+      <Route
+        path="/login"
+        element={!user ? <Login /> : <Navigate to="/" replace />}
+      />
+
       <Route path="/" element={<HomeRedirect />} />
-
-      <Route path="/login" element={<Login />} />
-
       <Route path="/unauthorized" element={<Unauthorized />} />
 
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* User Dashboard */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-
       {/* Admin */}
-      <Route
-        path="admin"
-        element={
-          <ProtectedRoute>
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="users/create" element={<UserCreate />} />
-        <Route path="users/edit/:id" element={<UserEdit />} />
-        <Route path="users" element={<UserList />} />
+      <Route element={<ProtectedRoute allowedRoles={[1]} />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserList />} />
+          <Route path="/admin/users/create" element={<UserCreate />} />
+          <Route path="/admin/users/edit/:id" element={<UserEdit />} />
+        </Route>
+      </Route>
+
+      {/* Manager  ,When its exists*/}
+      <Route path="/manager" element={<ProtectedRoute allowedRoles={[2]} />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/manager/dashboard" element={<AdminDashboard />} />
+        </Route>
       </Route>
 
       {/*Products */}
-      <Route
-        path="/products"
-        element={
-          <ProtectedRoute>
-            <ProductList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products/create"
-        element={
-          <ProtectedRoute>
-            <ProductCreate />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/products/edit/:id"
-        element={
-          <ProtectedRoute>
-            <ProductEdit />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<ProtectedRoute allowedRoles={[1, 2, 3]} />}>
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/products/create" element={<ProductCreate />} />
+        <Route path="/products/edit/:id" element={<ProductEdit />} />
 
-      {/* Protected routes */}
-      <Route
-        path="/brands"
-        element={
-          <ProtectedRoute>
-            <BrandList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/brands/create"
-        element={
-          <ProtectedRoute>
-            <BrandCreate />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/brands/edit/:id"
-        element={
-          <ProtectedRoute>
-            <BrandEdit />
-          </ProtectedRoute>
-        }
-      />
+        {/* Protected routes */}
+        <Route path="/brands" element={<BrandList />} />
+        <Route path="/brands/create" element={<BrandCreate />} />
+        <Route path="/brands/edit/:id" element={<BrandEdit />} />
+      </Route>
 
       <Route path="*" element={<NotFound />} />
     </Routes>

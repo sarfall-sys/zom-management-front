@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       try {
         // Intentamos traer al usuario de Laravel silenciosamente al arrancar
         const userData = await authService.me();
-        setUser(userData);
+        setUser(userData?.data || null); // Ajusta esto según la estructura de tu respuesta
       } catch (err) {
         // Si da 401, significa que no hay sesión. No pasa nada, se queda en null.
         setUser(null);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await authService.login(credentials);
       const userData = await authService.me();
-      setUser(userData);
+      setUser(userData.data);
       return user;
     } catch (err) {
       setError(err);
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await authService.register(data);
       const userData = await authService.me();
-      setUser(userData);
+      setUser(userData.data);
       return user;
     } catch (err) {
       setError(err);
